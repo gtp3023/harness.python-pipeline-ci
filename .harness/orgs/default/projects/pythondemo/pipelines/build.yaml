@@ -48,7 +48,7 @@ pipeline:
                     connectorRef: midockerhub
                     image: python:3.10.6-alpine
                     shell: Sh
-                    command: pythoenpython -m compileall ./
+                    command: python -m compileall ./
               - step:
                   type: Run
                   name: crear dockerfile
