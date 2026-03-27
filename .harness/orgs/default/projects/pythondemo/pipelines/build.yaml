@@ -117,14 +117,36 @@ pipeline:
                       docker images
                       docker ps
                 contextType: Pipeline
-              - step:
-                  type: Run
-                  name: test connection to the server
-                  identifier: test_connection_to_the_server
-                  spec:
-                    connectorRef: midockerhub
-                    image: curlimages/curl:7.73.0
-                    shell: Sh
-                    command: |-
-                      sleep 50
-                      curl localhost:5000
+              - parallel:
+                  - step:
+                      type: Run
+                      name: test connection to the server
+                      identifier: test_connection_to_the_server
+                      spec:
+                        connectorRef: midockerhub
+                        image: curlimages/curl:7.73.0
+                        shell: Sh
+                        command: |-
+                          echo "docker images"
+                          docker images
+                          echo "docker ps"
+                          docker ps
+                          echo "docker ps -a"
+                          docker ps -a
+                          sleep 50
+                          curl localhost:5000
+                  - step:
+                      type: Run
+                      name: Run_3
+                      identifier: Run_3
+                      spec:
+                        shell: Bash
+                        command: |-
+                          echo "docker images"
+                          docker images
+                          echo "docker ps"
+                          docker ps
+                          echo "docker ps -a"
+                          docker ps -a
+                          sleep 50
+                          curl localhost:5000
