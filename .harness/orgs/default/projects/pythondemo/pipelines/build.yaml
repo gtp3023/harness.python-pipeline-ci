@@ -109,6 +109,16 @@ pipeline:
                     command: python3 /python-pipeline-samples/app.py
               - step:
                   type: Run
+                  name: comprobar imagenes docker
+                  identifier: comprobar_imagenes_docker
+                  spec:
+                    shell: Bash
+                    command: |-
+                      docker images
+                      docker ps
+                contextType: Pipeline
+              - step:
+                  type: Run
                   name: test connection to the server
                   identifier: test_connection_to_the_server
                   spec:
