@@ -1,0 +1,120 @@
+pipeline:
+  name: ci
+  identifier: ci
+  projectIdentifier: pythondemo
+  orgIdentifier: default
+  tags: {}
+  properties:
+    ci:
+      codebase:
+        connectorRef: pythonpipelineciconnector
+        build: <+input>
+  stages:
+    - stage:
+        name: build test and run
+        identifier: build
+        description: ""
+        type: CI
+        spec:
+          cloneCodebase: true
+          caching:
+            enabled: false
+            override: true
+            paths: []
+          buildIntelligence:
+            enabled: false
+          platform:
+            os: Linux
+            arch: Amd64
+          runtime:
+            type: Cloud
+            spec: {}
+          execution:
+            steps:
+              - step:
+                  type: Run
+                  name: validacion entorno
+                  identifier: validacion_entorno
+                  spec:
+                    shell: Bash
+                    command: |-
+                      env
+                      ls -lhtra
+              - step:
+                  type: Run
+                  name: compilacion
+                  identifier: compilacion
+                  spec:
+                    connectorRef: midockerhub
+                    image: python:3.10.6-alpine
+                    shell: Sh
+                    command: pythoenpython -m compileall ./
+              - step:
+                  type: Run
+                  name: crear dockerfile
+                  identifier: crear_dockerfile
+                  spec:
+                    connectorRef: midockerhub
+                    image: alpine
+                    shell: Sh
+                    command: |-
+                      touch pythondockerfile
+                      cat > pythondockerfile <<- EOM
+                      FROM python:3.10.6-alpine
+                      WORKDIR /python-pipeline-samples
+                      ADD . /python-pipeline-samples
+                      RUN pip install -r requirements.txt
+                      CMD ["python" , "app.py"]
+                      EOM
+                      cat pythondockerfile
+              - step:
+                  type: BuildAndPushDockerRegistry
+                  name: BuildAndPushDockerRegistry_1
+                  identifier: BuildAndPushDockerRegistry_1
+                  spec:
+                    connectorRef: midockerhub
+                    repo: gt30docker/harness
+                    tags:
+                      - latest
+                    dockerfile: pythondockerfile
+    - stage:
+        name: prueba de integracion
+        identifier: prueba_de_integracion
+        description: ""
+        type: CI
+        spec:
+          cloneCodebase: false
+          caching:
+            enabled: false
+            override: true
+            paths: []
+          buildIntelligence:
+            enabled: false
+          platform:
+            os: Linux
+            arch: Amd64
+          runtime:
+            type: Cloud
+            spec: {}
+          execution:
+            steps:
+              - step:
+                  type: Background
+                  name: python server
+                  identifier: python_server
+                  spec:
+                    connectorRef: midockerhub
+                    image: gt30docker/harness
+                    shell: Sh
+                    command: python3 /python-pipeline-samples/app.py
+              - step:
+                  type: Run
+                  name: test connection to the server
+                  identifier: test_connection_to_the_server
+                  spec:
+                    connectorRef: midockerhub
+                    image: curlimages/curl:7.73.0
+                    shell: Sh
+                    command: |-
+                      sleep 10
+                      curl localhost:5000
