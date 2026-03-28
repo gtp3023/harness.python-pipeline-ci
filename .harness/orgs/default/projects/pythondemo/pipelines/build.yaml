@@ -17,10 +17,6 @@ pipeline:
         type: CI
         spec:
           cloneCodebase: true
-          caching:
-            enabled: false
-            override: true
-            paths: []
           buildIntelligence:
             enabled: false
           platform:
@@ -77,6 +73,7 @@ pipeline:
                     tags:
                       - latest
                     dockerfile: pythondockerfile
+                    optimize: true
     - stage:
         name: prueba de integracion
         identifier: prueba_de_integracion
