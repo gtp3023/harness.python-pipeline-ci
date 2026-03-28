@@ -12,7 +12,7 @@ pipeline:
   stages:
     - stage:
         name: build test and run
-        identifier: build
+        identifier: build_test_and_run
         description: ""
         type: CI
         spec:
@@ -87,12 +87,8 @@ pipeline:
             paths: []
           buildIntelligence:
             enabled: false
-          platform:
-            os: Linux
-            arch: Amd64
-          runtime:
-            type: Cloud
-            spec: {}
+          infrastructure:
+            useFromStage: build_test_and_run
           execution:
             steps:
               - step:
