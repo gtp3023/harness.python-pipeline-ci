@@ -127,12 +127,6 @@ pipeline:
                         image: curlimages/curl:7.73.0
                         shell: Sh
                         command: |-
-                          echo "docker images"
-                          docker images
-                          echo "docker ps"
-                          docker ps
-                          echo "docker ps -a"
-                          docker ps -a
                           sleep 50
                           curl localhost:5000
                   - step:
