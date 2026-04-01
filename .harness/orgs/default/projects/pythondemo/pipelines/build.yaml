@@ -121,7 +121,7 @@ pipeline:
                         shell: Sh
                         command: |-
                           sleep 10
-                          curl localhost:5000
+                          curl http://127.0.0.1:5000
                   - step:
                       type: Run
                       name: Run_3
