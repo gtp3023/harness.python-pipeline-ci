@@ -98,6 +98,8 @@ pipeline:
                     image: gt30docker/harness
                     shell: Sh
                     command: python3 /python-pipeline-samples/app.py
+                    portBindings:
+                      "5000": "5000"
               - step:
                   type: Run
                   name: comprobar imagenes docker
@@ -117,7 +119,9 @@ pipeline:
                         connectorRef: midockerhub
                         image: curlimages/curl:7.73.0
                         shell: Sh
-                        command: curl -I https://www.google.com
+                        command: |-
+                          sleep 10
+                          curl localhost:5000
                   - step:
                       type: Run
                       name: Run_3
