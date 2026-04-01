@@ -87,8 +87,6 @@ pipeline:
             paths: []
           buildIntelligence:
             enabled: false
-          infrastructure:
-            useFromStage: build_test_and_run
           execution:
             steps:
               - step:
@@ -119,9 +117,6 @@ pipeline:
                         connectorRef: midockerhub
                         image: curlimages/curl:7.73.0
                         shell: Sh
-                        command: |-
-                          sleep 50
-                          curl localhost:5000
                   - step:
                       type: Run
                       name: Run_3
@@ -135,5 +130,22 @@ pipeline:
                           docker ps
                           echo "docker ps -a"
                           docker ps -a
-                          sleep 50
-                          curl localhost:5000
+              - step:
+                  type: Run
+                  name: Run_4
+                  identifier: Run_4
+                  spec:
+                    shell: Sh
+                    command: |-
+                      echo "docker images"
+                      docker images
+                      echo "docker ps"
+                      docker ps
+                      echo "docker ps -a"
+                      docker ps -a
+          platform:
+            os: Linux
+            arch: Amd64
+          runtime:
+            type: Cloud
+            spec: {}
